@@ -1,3 +1,5 @@
 __pycache__/
 .python-version
 .env
+app.log
+socketio_app.log
