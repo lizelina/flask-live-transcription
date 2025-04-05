@@ -13,7 +13,8 @@ from deepgram import (
 load_dotenv()
 
 app_socketio = Flask("app_socketio")
-socketio = SocketIO(app_socketio, cors_allowed_origins=['http://127.0.0.1:8000'])
+# Allow CORS from the main app and any production URLs
+socketio = SocketIO(app_socketio, cors_allowed_origins=['http://127.0.0.1:8000', 'http://localhost:8000', 'https://*', 'http://*'])
 
 API_KEY = os.getenv("DEEPGRAM_API_KEY")
 
@@ -83,4 +84,7 @@ def restart_deepgram():
 
 if __name__ == '__main__':
     logging.info("Starting SocketIO server.")
-    socketio.run(app_socketio, debug=True, allow_unsafe_werkzeug=True, port=5001)
+    # Get port from environment variable (for cloud deployment) or use default
+    port = int(os.environ.get("PORT", 5001))
+    # Run socketio app - bind to 0.0.0.0 for cloud deployment
+    socketio.run(app_socketio, host='0.0.0.0', debug=False, allow_unsafe_werkzeug=True, port=port)
